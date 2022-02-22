@@ -1,0 +1,249 @@
+
+%\hypertarget{aula-9}{%
+%\chapter{Aula: 9}\label{aula-9}}
+
+
+
+
+\hypertarget{camada-de-aplicauxe7uxe3o-a-razuxe3o-de-existir-das-redes}{%
+\chapter{Camada de Aplicação: a razão de existir das redes}\label{camada-de-aplicauxe7uxe3o-a-razuxe3o-de-existir-das-redes}}
+
+A camada de aplicação (primeira camada) é considerada como a mais
+importante, pois ela é quem gera a utilidade da rede. Assim, a
+infraestrutura, bem como os protocolos, foram criados para servi-la, e,
+portanto, sem a aplicação, não existiria as demais camadas. Essa
+utilidade vem dos benefícios produzidos pela interação de dois processos
+executados em computadores diferentes e, possivelmente, sistemas
+operacionais diferentes. Para tal, há duas principais arquiteturas,
+\emph{client-server} e \emph{peer-to-peer} (P2P).
+
+\hypertarget{http}{%
+\section{HTTP}\label{http}}
+
+A arquitetura \emph{client-server} é empregue na aplicação \emph{Web}, o
+qual usufrui do protocolo \emph{Hypertext Transfer Protocol} (HTTP).
+Essa arquitetura funciona no sistema \emph{always on}, no qual o
+servidor, ou processo que espera para ser contactado no início da
+interação, deve sempre ficar ativo, e o seu endereço na rede fixado. Os
+clientes não interagem diretamente entre si. O protocolo de transporte
+usado é o TCP.
+
+A escalabilidade dessa arquitetura (a capacidade de suportar o aumento
+do número de clientes) está limitada pela capacidade da infraestrutura
+já instalada. Assim, o aumento no número de \emph{requests} (derivado do
+aumento no número de \emph{clients}) deve ser precedido por um aumento
+na competência do servidor de lidar com os mesmos. Por essa razão, os
+servidores são comumente hospedados em \emph{data centers}, algo que
+facilita a escalabilidade, por alocar, dinamicamente, centenas de
+dispositivos para o processo \emph{server} (o servidor se torna uma
+entidade processada por múltiplos dispositivos).
+
+O HTTP define a estrutura das mensagens e a forma que as mesmas são
+trocadas. Essa troca é baseada no padrão \emph{response-request} (a
+mensagem do \emph{client} é o \emph{request}, e a reposta do
+\emph{server} o \emph{response}). O \emph{client} (uma navegador como o
+\emph{Chrome}, por exemplo), definido por ser o processo que inicia a
+comunicação, necessita do endereço do \emph{server}, chamado de URL, que
+é composta por dois componentes, o \emph{hostname} (
+\emph{http://www.google.com/}) e o \emph{pathname}
+(\emph{/search?q=alguma+coisa}):
+
+\begin{verbatim}
+URL: http://www.google.com/search?q=alguma+coisa
+\end{verbatim}
+
+A mensagem HTTP \emph{request} segue o seguinte padrão:
+
+\emph{Request Line}:
+\texttt{GET\ /somedir/page.html\ HTTP/1.1\ \textbackslash{}r\textbackslash{}n}
+(= Método + URL + HTTP \emph{version} + \emph{carriage return and line
+feed})\\
+\emph{Header lines} (line 1):
+\texttt{HOST:\ www.google.com.br\ \textbackslash{}r\textbackslash{}n}
+(\emph{host} no qual hospeda o objeto requisitado)\\
+\emph{Header lines} (line 2):
+\texttt{Connection:\ Mozilla/5.0\ \textbackslash{}r\textbackslash{}n}
+(navegador \emph{Firefox})\\
+\emph{Header lines} (line 3):
+\texttt{Accept-language:\ fr\ \textbackslash{}r\textbackslash{}n}
+(prefere a versão em língua francesa)\\
+\emph{Header lines} (line x):
+\texttt{...\ \textbackslash{}r\textbackslash{}n} (outras
+configurações)\\
+\emph{Entity body} (line y): \texttt{\textbackslash{}r\textbackslash{}n}
+(pode ficar vazio, como no método \emph{GET}, ou preenchido, como no
+método \emph{POST})
+
+A mensagem HTTP \emph{response} segue o seguinte padrão:
+
+\emph{Status Line}:
+\texttt{HTTP/1.1\ 200\ OK\ \textbackslash{}r\textbackslash{}n} (Tudo
+ocorreu bem)\\
+\emph{Header lines} (line 1):
+\texttt{Connection:\ close\ \textbackslash{}r\textbackslash{}n}
+(\emph{server} irá encerrar a conexão)\\
+\emph{Header lines} (line 2):
+\texttt{Date:\ Tue,\ 18\ Aug\ 2015\ 15:44:04\ GMT\ \textbackslash{}r\textbackslash{}n}
+(data em que o \emph{response} foi enviado)\\
+\emph{Header lines} (line 3):
+\texttt{Server:\ Apache/2.2.3\ \textbackslash{}r\textbackslash{}n} (nome
+do servidor)\\
+\emph{Header lines} (line 4):
+\texttt{Last-Modified:\ Tue,\ 18\ Aud\ 2015\ 15:11:03\ GMT} (data da
+última modificação)\\
+\emph{Header lines} (line 5):
+\texttt{Content-Length:\ 6821\ \textbackslash{}r\textbackslash{}n}
+(número de bytes do objeto enviado - O mesmo está em \emph{Entity
+body})\\
+\emph{Header lines} (line 6):
+\texttt{Content-Type:\ text/html\ \textbackslash{}r\textbackslash{}n}
+(indica o formato do objeto, no caso uma página html)\\
+\emph{Entity body} (line y):
+\texttt{...\ \textbackslash{}r\textbackslash{}n} (dados do objeto)
+
+\hypertarget{torrent}{%
+\section{Torrent}\label{torrent}}
+
+A segunda arquitetura citada anteriormente, a P2P, baseia-se na
+inter-colaboração intermitente dos dispositivos na rede, ou \emph{peers},
+de forma que esses podem ser \emph{client} e \emph{server}
+simultaneamente (É importante perceber que, em uma sessão de comunicação
+com um par de dispositivos, o \emph{client} é aquele que inicia o
+contato e o \emph{server} aquele que espera para ser contactado, assim,
+apesar de cada \emph{peer} assumir ambas as formas simultaneamente nessa
+rede, elas tem um único papel para cada sessão). Essa arquitetura é
+auto-escalável (\emph{self-escalability}), pois cada \emph{peer}, apesar
+de adicionar novos \emph{requests}, adicionam também capacidade de
+serviço na rede.
+
+A popularidade desse protocolo vem do uso da tecnologia \emph{Torrent}.
+Desenvolvida pela empresa \emph{BitTorrent}, essa tecnologia
+descentraliza o fornecimento de arquivos, de forma que os \emph{peers},
+conforme fazem o \emph{download}, também proporcionam os dados já
+baixados de volta para a rede. Assim, a capacidade de transmissão não
+está limitada pelo \emph{seed} (primeiro fornecedor de um conteúdo),
+crescendo, e, consequentemente, tornando arquivos populares mais
+acessíveis, conforme aumenta a participação dos usuários (sendo,
+consequentemente, barato, por não necessitar a contratação de uma
+infraestrutura para o fornecimento de arquivos).
+
+Essa arquitetura enfrenta diversos desafios, como: segurança, performance
+e confiabilidade.
+
+\hypertarget{sockets}{%
+\section{Sockets}\label{sockets}}
+
+Os \emph{sockets} são uma estrutura de dados em \emph{kernel space}
+(encontrados dentro do sistema operacional, ou seja, seu acesso é
+através de uma chamada de sistema) que fornece (analogamente a uma
+porta) uma interface (API, \emph{Application Programming Interface})
+para a interação da camada de aplicação com a camada de transporte. Ele
+se manifesta através de um FD (\emph{file descriptor}, um arquivo),
+fornecendo um \emph{pipeline} para o processo (em \emph{user-space}).
+Para ser executado, o \emph{socket} necessita do endereço do \emph{host}
+(\emph{internet protocol address} ou \emph{IP address}) e do
+identificador que especifica o processo receptor no \emph{host} (chamado
+de \emph{Port Number}). Por padrão, o \emph{web server} utiliza a porta
+80, e o \emph{mail server} (com o protocolo SMTP) é identificado pela
+porta 25.
+
+\hypertarget{serviuxe7os-de-transporte}{%
+\section{Serviços de transporte}\label{serviuxe7os-de-transporte}}
+
+Como citado anteriormente, a camada de transporte fornece uma série de
+serviços para a camada superior. Esses serviços podem ser analisados sob
+a ótica de: confiabilidade (\emph{reliable data transfer}), taxa de
+transferência (\emph{throughput}), atraso (\emph{delay} ou \emph{timing})
+e segurança (\emph{security}). Nesse sentido, a \emph{internet} prover
+dois protocolos de transporte, o UDP e o TCP, os quais disponibiliza
+serviços com características diferentes, de maneira que:
+
+TCP:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \emph{Handshaking procedure}: com uma preparação anterior ao envio da
+  mensagem (confiabilidade).
+\item
+  \emph{Full duplex connection}: com os processos podendo receber e
+  enviar dados.
+\item
+  \emph{Reliable data transfer service}: sendo os dados enviados sem
+  erros e na ordem correta (confiabilidade).
+\item
+  \emph{Transport Layer Secutiry: uma melhora no TCP que fornece
+  criptografia (}encryption\emph{), integridade de dados (}data
+  integrity\emph{) e }end-point authentication* (segurança).
+\item
+  Garantia de entrega da mensagem.
+\end{enumerate}
+
+UDP (um \emph{lightweight transport protocol}):
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \emph{No handshaking procedure}: Não se sabe se o receptor está
+  preparado para receber a mensagem.
+\item
+  \emph{Unreliable data transfer}: podendo ser recebidos dados
+  corrompidos e fora de ordem.
+\item
+  Não há garantia de entrega da mensagem.
+\item
+  Rápida.
+\end{enumerate}
+
+É importante perceber que os serviços de \emph{timing} e
+\emph{throughput}, apesar de serem necessários para algumas aplicações,
+como \emph{internet telephony} (Skype), não são fornecidos pelos
+protocolos de \emph{internet} atuais.
+
+\hypertarget{complementar-3}{%
+\section{Complementar}\label{complementar-3}}
+
+\hypertarget{pesquisar-sobre-2}{%
+\subsubsection{Pesquisar Sobre}\label{pesquisar-sobre-2}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \emph{Socket programming}: página 152 do livro \emph{Computer
+  Networking a top-down approach 8th ed.}
+\item
+  \emph{Dual Stack}: IPv4 e IPv6
+\item
+  NAT
+\item
+  WireShark: www.wireshark.org
+\item
+  ip addr shwo
+\item
+  ip config /on
+\item
+  telnet 127.0.0.1 3000
+\item
+  SS - apt \textbar{} grep 3000
+\item
+  SS - apt \textbar{} grep telnet
+\item
+  nc - V - U 127.0.0.1 1200
+\item
+  ncat
+\item
+  CDN (\emph{Content Distribution Networks})
+\item
+  DASH (\emph{Dynamic Adaptive Streaming over HTTP}).
+\item
+  DNS (\emph{domain name system}): The Internet's Directory Service
+\item
+  telnet serverName 25
+\item
+  SMTP (\emph{Simple Mail Transfer Protocol})
+\item
+  \emph{Cookies} (\emph{User interaction})
+\end{enumerate}
